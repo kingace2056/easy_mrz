@@ -7,6 +7,8 @@ This repository is a revamp of the original
 The rewrite keeps the same core plugin API while modernizing the package name,
 documentation, and native iOS implementation.
 
+Agent and tooling notes live in [AGENTS.md](/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/flutter_mrz_scanner/AGENTS.md) and [docs/ARCHITECTURE.md](/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/flutter_mrz_scanner/docs/ARCHITECTURE.md).
+
 ## What It Does
 
 - Scans MRZ lines from live camera preview.
@@ -16,7 +18,7 @@ documentation, and native iOS implementation.
 - Can toggle the flashlight on supported devices.
 - Can capture a still photo with optional crop.
 - Uses Apple Vision on iOS instead of the old Tesseract path.
-- Keeps the Android native camera/OCR pipeline.
+- Uses CameraX and on-device ML Kit text recognition on Android.
 
 ## Supported Platforms
 
@@ -119,8 +121,12 @@ valid parse is found.
 
 ### iOS Vision OCR
 
-The iOS implementation now uses Apple Vision text recognition, which is faster
-and removes the old Tesseract dependency path.
+The iOS implementation uses Apple Vision text recognition.
+
+### Android CameraX + ML Kit
+
+The Android implementation uses CameraX for preview/capture and bundled ML Kit
+text recognition for local on-device OCR.
 
 ### Overlay
 
@@ -164,6 +170,7 @@ This revamp was done to:
 
 - Rebrand the package to `easy_mrz`
 - Modernize the iOS scanning path
+- Replace the Android Fotoapparat/Tesseract stack with CameraX and ML Kit
 - Improve OCR normalization
 - Improve MRZ parsing stability
 - Clean up the plugin structure

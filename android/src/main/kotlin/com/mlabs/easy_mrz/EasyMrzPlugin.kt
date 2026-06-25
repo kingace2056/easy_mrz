@@ -1,83 +1,110 @@
 package com.mlabs.easy_mrz
 
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
-import io.fotoapparat.characteristic.LensPosition
-import io.fotoapparat.configuration.CameraConfiguration
-import io.fotoapparat.configuration.Configuration
-import io.fotoapparat.selector.LensPositionSelector
-import io.fotoapparat.selector.front
 
-class EasyMrzPlugin : FlutterPlugin {
+class EasyMrzPlugin : FlutterPlugin, ActivityAware {
+    private lateinit var viewFactory: MRZScannerFactory
+    private var activity: Activity? = null
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        flutterPluginBinding.applicationContext
-        flutterPluginBinding.platformViewRegistry.registerViewFactory("easy_mrz_scanner", MRZScannerFactory(flutterPluginBinding))
+        viewFactory = MRZScannerFactory(
+            messenger = flutterPluginBinding.binaryMessenger,
+            activityProvider = { activity },
+        )
+        flutterPluginBinding.platformViewRegistry.registerViewFactory(
+            "easy_mrz_scanner",
+            viewFactory,
+        )
     }
 
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {}
-}
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) = Unit
 
-class MRZScannerFactory(private val flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
-    override fun create(context: Context?, id: Int, o: Any?): PlatformView {
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        activity = binding.activity
+    }
 
-        val ctx = if (context != null) context else flutterPluginBinding.applicationContext;
+    override fun onDetachedFromActivityForConfigChanges() {
+        activity = null
+    }
 
-        return MRZScannerView(ctx, flutterPluginBinding.binaryMessenger, id)
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+        activity = binding.activity
+    }
+
+    override fun onDetachedFromActivity() {
+        activity = null
     }
 }
 
-class MRZScannerView internal constructor(context: Context, messenger: BinaryMessenger, id: Int) : PlatformView, MethodChannel.MethodCallHandler {
-    private val methodChannel: MethodChannel = MethodChannel(messenger, "easy_mrz_scanner_$id")
-    private val cameraView: FotoapparatCamera = FotoapparatCamera(context, methodChannel)//, messenger)
+class MRZScannerFactory(
+    private val messenger: BinaryMessenger,
+    private val activityProvider: () -> Activity?,
+) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+    override fun create(context: Context?, id: Int, args: Any?): PlatformView {
+        val platformContext = context ?: activityProvider()?.applicationContext
+        requireNotNull(platformContext) { "Android context is required to create MRZ scanner view." }
+        return MRZScannerView(platformContext, messenger, id, activityProvider)
+    }
+}
 
-    override fun getView(): View = cameraView.cameraView
+class MRZScannerView internal constructor(
+    context: Context,
+    messenger: BinaryMessenger,
+    id: Int,
+    activityProvider: () -> Activity?,
+) : PlatformView, MethodChannel.MethodCallHandler {
+    private val methodChannel = MethodChannel(messenger, "easy_mrz_scanner_$id")
+    private val scanner = CameraXMrzScanner(context, activityProvider, methodChannel)
 
     init {
         methodChannel.setMethodCallHandler(this)
     }
 
+    override fun getView(): View = scanner.previewView
+
     override fun dispose() {
-        cameraView.fotoapparat.stop()
+        scanner.dispose()
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: MethodChannel.Result) {
         when (call.method) {
             "start" -> {
-                val isFrontCam = call.argument<Boolean>("isFrontCam")
-                if (isFrontCam!!) {
-                    cameraView.fotoapparat.switchTo(front(), cameraView.configuration)
-                }
-                cameraView.fotoapparat.start()
+                scanner.startScanning(call.argument<Boolean>("isFrontCam") == true)
                 result.success(null)
             }
+
             "stop" -> {
-                cameraView.fotoapparat.stop()
+                scanner.stopScanning()
                 result.success(null)
             }
+
             "flashlightOn" -> {
-                cameraView.flashlightOn()
+                scanner.flashlightOn()
                 result.success(null)
             }
+
             "flashlightOff" -> {
-                cameraView.flashlightOff()
+                scanner.flashlightOff()
                 result.success(null)
             }
+
             "takePhoto" -> {
-                val shouldCrop = call.argument<Boolean>("crop")
-                shouldCrop?.let { cameraView.takePhoto(result, crop = it) }
+                scanner.takePhoto(result, call.argument<Boolean>("crop") != false)
             }
-            else -> {
-                result.notImplemented()
-            }
+
+            else -> result.notImplemented()
         }
     }
 }
