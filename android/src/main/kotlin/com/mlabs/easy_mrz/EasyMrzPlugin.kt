@@ -16,7 +16,7 @@ import io.fotoapparat.configuration.Configuration
 import io.fotoapparat.selector.LensPositionSelector
 import io.fotoapparat.selector.front
 
-class FlutterMrzScannerPlugin : FlutterPlugin {
+class EasyMrzPlugin : FlutterPlugin {
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         flutterPluginBinding.applicationContext
@@ -43,7 +43,6 @@ class MRZScannerView internal constructor(context: Context, messenger: BinaryMes
 
     init {
         methodChannel.setMethodCallHandler(this)
-        cameraView.fotoapparat.start()
     }
 
     override fun dispose() {

@@ -2,7 +2,7 @@ import AVFoundation
 import Flutter
 import UIKit
 
-public final class FlutterMrzScannerPlugin: NSObject, FlutterPlugin {
+public final class EasyMrzPlugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
         let factory = FlutterMRZScannerFactory(messenger: registrar.messenger())
         registrar.register(factory, withId: "easy_mrz_scanner")

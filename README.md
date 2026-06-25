@@ -55,11 +55,14 @@ Add a camera usage description in `Info.plist`:
 
 ### Android
 
-If your host app does not already include it, declare camera permission:
+If your host app does not already include it, declare camera permission in the
+app manifest:
 
 ```xml
 <uses-permission android:name="android.permission.CAMERA" />
 ```
+
+If you are using the example app, this is already included.
 
 ## Usage
 

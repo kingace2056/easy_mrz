@@ -19,6 +19,6 @@ flutter:
     platforms:
       android:
         package: com.mlabs.easy_mrz
-        pluginClass: FlutterMrzScannerPlugin
+        pluginClass: EasyMrzPlugin
       ios:
-        pluginClass: FlutterMrzScannerPlugin
+        pluginClass: EasyMrzPlugin
