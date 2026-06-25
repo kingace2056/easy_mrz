@@ -1,56 +1,179 @@
-# flutter_mrz_scanner
+# easy_mrz
 
-Scan MRZ (Machine Readable Zone) from identity documents (passport, id, visa) using iOS and Android. Heavily insipred by [QKMRZScanner](https://github.com/Mattijah/QKMRZScanner).
+`easy_mrz` is a Flutter MRZ scanner for passports, IDs, visas, and other travel documents with machine readable zones.
 
-## To plugin users
-Hello,
+This repository is a revamp of the original
+[flutter_mrz_scanner](https://github.com/olexale/flutter_mrz_scanner) project.
+The rewrite keeps the same core plugin API while modernizing the package name,
+documentation, and native iOS implementation.
 
-Sorry that the plugin didn’t work well for all of you. Unfortunately, I don’t have testing devices and time for investigations and fixing issues at the moment. Please feel free to create new tickets. I would be even more grateful for pull requests.
-I’m not abandoning the plugin and promise to merge contributions with fixes and new functionality, hence I would kindly ask for help with the development 🙂
+## What It Does
 
-Thanks in advance! 
+- Scans MRZ lines from live camera preview.
+- Parses MRZ text into structured data with `mrz_parser`.
+- Supports an optional document overlay to guide alignment.
+- Lets you start and stop scanning from Dart.
+- Can toggle the flashlight on supported devices.
+- Can capture a still photo with optional crop.
+- Uses Apple Vision on iOS instead of the old Tesseract path.
+- Keeps the Android native camera/OCR pipeline.
 
-### Supported formats:
-* TD1
-* TD2
-* TD3
-* MRV-A
-* MRV-B
+## Supported Platforms
+
+- iOS 13+
+- Android 21+
+
+## Example App Ids
+
+- Plugin package: `com.mlabs.easy_mrz`
+- Example Android applicationId: `com.example.easy_mrz`
+- Example iOS bundle identifier: `com.example.easy_mrz`
+
+## Installation
+
+```yaml
+dependencies:
+  easy_mrz: ^1.0.0
+```
+
+Then run:
+
+```bash
+flutter pub get
+```
+
+## Permissions
+
+### iOS
+
+Add a camera usage description in `Info.plist`:
+
+```xml
+<key>NSCameraUsageDescription</key>
+<string>Camera access is required to scan MRZ documents.</string>
+```
+
+### Android
+
+If your host app does not already include it, declare camera permission:
+
+```xml
+<uses-permission android:name="android.permission.CAMERA" />
+```
 
 ## Usage
 
-### Import the package
-Add to `pubspec.yaml`
-```yaml
-dependencies:
-  flutter_mrz_scanner: <latest_version_here>
-```
-### For iOS
-Set iOS deployment target to 12.
-The plugin uses the device camera, so do not forget to provide the `NSCameraUsageDescription`. You may specify it in `Info.plist` like that:
-```xml
-    <key>NSCameraUsageDescription</key>
-    <string>May I scan a MRZ please?</string>
-```
-
-### For Android
-Camera permission will be automatically added to your `AndroidManifest.xml`. Do not forget to request this permission.
-
-### Use the widget
-Use `MRZScanner` widget:
 ```dart
-MRZScanner(
-  withOverlay: true, // optional overlay
-  onControllerCreated: (controller) =>
-    onControllerCreated(controller),
-  )
-```
-Refer to `example` project for the complete app sample.
+import 'package:easy_mrz/easy_mrz.dart';
 
-## Acknowledgements
-* [Anna Domashych](https://github.com/foxanna) for helping with [mrz_parser](https://github.com/olexale/mrz_parser) implementation in Dart
-* [Anton Derevyanko](https://github.com/antonderevyanko) for hours of Android-related discussions
-* [Mattijah](https://github.com/Mattijah) for beautiful [QKMRZScanner](https://github.com/Mattijah/QKMRZScanner) library
+class ScannerPage extends StatelessWidget {
+  const ScannerPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MRZScanner(
+      withOverlay: true,
+      onControllerCreated: (controller) {
+        controller.onParsed = (result) {
+          // Handle MRZResult here.
+          debugPrint('MRZ parsed: ${result.toJson()}');
+        };
+
+        controller.onError = (message) {
+          debugPrint('Scanner error: $message');
+        };
+
+        controller.startPreview();
+      },
+    );
+  }
+}
+```
+
+## Controller API
+
+The `MRZScanner` widget gives you an `MRZController`.
+
+Available methods:
+
+- `startPreview({bool isFrontCam = false})`
+- `stopPreview()`
+- `flashlightOn()`
+- `flashlightOff()`
+- `takePhoto({bool crop = true})`
+
+Callbacks:
+
+- `onParsed(MRZResult result)`
+- `onError(String message)`
+
+## Features In Detail
+
+### Live Parsing
+
+The scanner continuously analyzes the camera feed and emits MRZ results once a
+valid parse is found.
+
+### iOS Vision OCR
+
+The iOS implementation now uses Apple Vision text recognition, which is faster
+and removes the old Tesseract dependency path.
+
+### Overlay
+
+Set `withOverlay: true` to show the guide frame around the expected document
+region.
+
+### Still Capture
+
+Use `takePhoto()` if you want the raw image bytes, or pass `crop: true` to crop
+the document region before returning the image.
+
+### Front Camera Support
+
+The controller can switch to the front camera with:
+
+```dart
+controller.startPreview(isFrontCam: true);
+```
+
+## Recommended Usage
+
+For the best scan rate and reliability:
+
+- Use a real device instead of an emulator or simulator.
+- Hold the document inside the overlay frame.
+- Make sure lighting is even.
+- Avoid strong glare on laminated pages.
+
+## Example
+
+Run the example app from the `example/` folder:
+
+```bash
+cd example
+flutter run
+```
+
+## Migration Notes
+
+This revamp was done to:
+
+- Rebrand the package to `easy_mrz`
+- Modernize the iOS scanning path
+- Improve OCR normalization
+- Improve MRZ parsing stability
+- Clean up the plugin structure
+- Add clearer documentation
+
+## Credits
+
+Original project:
+[Oleksii Leushchenko](https://github.com/olexale)
+
+Revamp and maintenance:
+[kingace2056](https://github.com/kingace2056)
 
 ## License
-`flutter_mrz_scanner` is released under a [MIT License](https://opensource.org/licenses/MIT). See `LICENSE` for details.
+
+MIT. See [LICENSE](/LICENSE).

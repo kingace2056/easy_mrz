@@ -1,3 +1,17 @@
+## 1.0.0
+
+- Rebranded the package to `easy_mrz`.
+- Reworked the iOS implementation to use Apple Vision.
+- Cleaned up the example app and removed CocoaPods scaffolding.
+- Preserved credit to the original `flutter_mrz_scanner` project.
+
+## 3.0.0
+
+- Migrated the iOS implementation to Swift Package Manager support.
+- Replaced the iOS OCR dependency with Vision-based text recognition.
+- Improved MRZ candidate normalization before parsing.
+- Updated package constraints for Dart 3 / modern Flutter.
+
 ## 2.2.1
 
 * Fix Android 16KB Page size incompatibility by updating tesseract4android to 4.9.0 (by @khamidjon)

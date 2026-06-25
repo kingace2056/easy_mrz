@@ -1,4 +1,4 @@
-package io.github.olexale.flutter_mrz_scanner
+package com.mlabs.easy_mrz
 
 import android.content.Context
 import android.view.View
@@ -20,7 +20,7 @@ class FlutterMrzScannerPlugin : FlutterPlugin {
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         flutterPluginBinding.applicationContext
-        flutterPluginBinding.platformViewRegistry.registerViewFactory("mrzscanner", MRZScannerFactory(flutterPluginBinding))
+        flutterPluginBinding.platformViewRegistry.registerViewFactory("easy_mrz_scanner", MRZScannerFactory(flutterPluginBinding))
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {}
@@ -36,7 +36,7 @@ class MRZScannerFactory(private val flutterPluginBinding: FlutterPlugin.FlutterP
 }
 
 class MRZScannerView internal constructor(context: Context, messenger: BinaryMessenger, id: Int) : PlatformView, MethodChannel.MethodCallHandler {
-    private val methodChannel: MethodChannel = MethodChannel(messenger, "mrzscanner_$id")
+    private val methodChannel: MethodChannel = MethodChannel(messenger, "easy_mrz_scanner_$id")
     private val cameraView: FotoapparatCamera = FotoapparatCamera(context, methodChannel)//, messenger)
 
     override fun getView(): View = cameraView.cameraView

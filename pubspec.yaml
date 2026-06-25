@@ -1,11 +1,13 @@
-name: flutter_mrz_scanner
-description: Scans MRZ (Machine Readable Zone) from identity documents for iOS and Android.
-version: 2.2.1
-homepage: https://github.com/olexale/flutter_mrz_scanner
+name: easy_mrz
+description: Fast MRZ (Machine Readable Zone) scanning for identity documents on iOS and Android.
+version: 1.0.0+1
+homepage: https://github.com/kingace2056/easy_mrz
+repository: https://github.com/kingace2056/easy_mrz
+issue_tracker: https://github.com/kingace2056/easy_mrz/issues
 
 environment:
-  sdk: ">=2.17.6 <4.0.0"
-  flutter: ">=3.0.5"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.24.0"
 
 dependencies:
   flutter:
@@ -16,7 +18,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: io.github.olexale.flutter_mrz_scanner
+        package: com.mlabs.easy_mrz
         pluginClass: FlutterMrzScannerPlugin
       ios:
         pluginClass: FlutterMrzScannerPlugin

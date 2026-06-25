@@ -1,4 +1,4 @@
-package io.github.olexale.flutter_mrz_scanner
+package com.mlabs.easy_mrz
 
 import android.content.Context
 import android.graphics.*
@@ -120,6 +120,7 @@ class FotoapparatCamera constructor(
         val baseApi = TessBaseAPI()
         baseApi.init(context.cacheDir.absolutePath, "ocrb")
         baseApi.pageSegMode = DEFAULT_PAGE_SEG_MODE
+        baseApi.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<")
         baseApi.setImage(bitmap)
         val mrz = baseApi.utF8Text
         baseApi.stop()
@@ -127,11 +128,36 @@ class FotoapparatCamera constructor(
     }
 
     private fun extractMRZ(input: String): String {
-        val lines = input.split("\n")
-        val mrzLength = lines.last().length
-        val mrzLines = lines.takeLastWhile { it.length == mrzLength }
-        val mrz = mrzLines.joinToString("\n")
-        return mrz
+        return input
+            .replace("\r", "\n")
+            .split('\n')
+            .map { normalizeLine(it) }
+            .filter { it.length >= 5 }
+            .joinToString("\n")
+    }
+
+    private fun normalizeLine(value: String): String {
+        val replacements = mapOf(
+            '«' to '<',
+            '‹' to '<',
+            '›' to '<',
+            '﹤' to '<',
+            '＜' to '<',
+            '|' to '<',
+            '¦' to '<',
+            '>' to '<',
+        )
+
+        val builder = StringBuilder()
+        for (character in value.uppercase()) {
+            val normalized = replacements[character] ?: character
+            val isDigit = normalized in '0'..'9'
+            val isAlpha = normalized in 'A'..'Z'
+            if (isDigit || isAlpha || normalized == '<') {
+                builder.append(normalized)
+            }
+        }
+        return builder.toString()
     }
 
     @Throws(IOException::class)

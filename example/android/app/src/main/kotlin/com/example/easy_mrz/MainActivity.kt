@@ -1,4 +1,4 @@
-package io.github.olexale.flutterMrzScannerExample.flutter_mrz_scanner_example
+package com.example.easy_mrz
 
 import io.flutter.embedding.android.FlutterActivity
 

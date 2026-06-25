@@ -1,16 +1,22 @@
-# flutter_mrz_scanner_example
+# easy_mrz_example
 
-Demonstrates how to use the flutter_mrz_scanner plugin.
+Example app for the `easy_mrz` package.
 
-## Getting Started
+## Run It
 
-This project is a starting point for a Flutter application.
+```bash
+cd example
+flutter pub get
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+## App IDs
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- Android: `com.example.easy_mrz`
+- iOS: `com.example.easymrz`
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Notes
+
+- Use a real device for camera scanning when possible.
+- Make sure camera permissions are enabled.
+- The example demonstrates live MRZ parsing, overlay rendering, and photo capture.

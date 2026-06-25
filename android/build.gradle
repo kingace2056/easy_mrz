@@ -1,4 +1,4 @@
-group 'io.github.olexale.flutter_mrz_scanner'
+group 'com.mlabs.easy_mrz'
 version '1.0-SNAPSHOT'
 
 buildscript {
@@ -28,7 +28,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 36
-    namespace "io.github.olexale.flutter_mrz_scanner"
+    namespace "com.mlabs.easy_mrz"
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -46,16 +46,15 @@ android {
         minSdkVersion 21
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    lintOptions {
+    lint {
         disable 'InvalidPackage'
     }
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.10'
     implementation 'cz.adaptech:tesseract4android:4.9.0'
 
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'io.fotoapparat:fotoapparat:2.7.0'
 }
 

@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:easy_mrz/src/camera_overlay.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_mrz_scanner/src/camera_overlay.dart';
 import 'package:mrz_parser/mrz_parser.dart';
 
 /// MRZ scanner camera widget
@@ -24,13 +24,13 @@ class MRZScanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final scanner = defaultTargetPlatform == TargetPlatform.iOS
         ? UiKitView(
-            viewType: 'mrzscanner',
+            viewType: 'easy_mrz_scanner',
             onPlatformViewCreated: (int id) => onPlatformViewCreated(id),
             creationParamsCodec: const StandardMessageCodec(),
           )
         : defaultTargetPlatform == TargetPlatform.android
             ? AndroidView(
-                viewType: 'mrzscanner',
+                viewType: 'easy_mrz_scanner',
                 onPlatformViewCreated: (int id) => onPlatformViewCreated(id),
                 creationParamsCodec: const StandardMessageCodec(),
               )
@@ -46,7 +46,7 @@ class MRZScanner extends StatelessWidget {
 
 class MRZController {
   MRZController._init(int id) {
-    _channel = MethodChannel('mrzscanner_$id');
+    _channel = MethodChannel('easy_mrz_scanner_$id');
     _channel.setMethodCallHandler(_platformCallHandler);
   }
 
@@ -80,12 +80,10 @@ class MRZController {
         break;
       case 'onParsed':
         if (onParsed != null) {
-          final lines = _splitRecognized(call.arguments);
-          if (lines.isNotEmpty) {
-            final result = MRZParser.tryParse(lines);
-            if (result != null) {
-              onParsed!(result);
-            }
+          final recognizedText = call.arguments as String?;
+          final result = _parseRecognizedText(recognizedText);
+          if (result != null) {
+            onParsed!(result);
           }
         }
         break;
@@ -93,9 +91,95 @@ class MRZController {
     return Future.value();
   }
 
-  List<String> _splitRecognized(String recognizedText) {
-    final mrzString = recognizedText.replaceAll(' ', '');
-    return mrzString.split('\n').where((s) => s.isNotEmpty).toList();
+  MRZResult? _parseRecognizedText(String? recognizedText) {
+    if (recognizedText == null || recognizedText.trim().isEmpty) {
+      return null;
+    }
+
+    final lines = _normalizedLines(recognizedText);
+    if (lines.length < 2) {
+      return null;
+    }
+
+    final candidates = <List<String>>[];
+    for (final windowSize in [3, 2]) {
+      if (lines.length < windowSize) {
+        continue;
+      }
+
+      for (var start = 0; start <= lines.length - windowSize; start++) {
+        candidates.add(lines.sublist(start, start + windowSize));
+      }
+    }
+
+    candidates.sort((a, b) => _candidateScore(b).compareTo(_candidateScore(a)));
+
+    final seen = <String>{};
+    for (final candidate in candidates) {
+      final key = candidate.join('\n');
+      if (!seen.add(key)) {
+        continue;
+      }
+
+      final result = MRZParser.tryParse(candidate);
+      if (result != null) {
+        return result;
+      }
+    }
+
+    return null;
+  }
+
+  List<String> _normalizedLines(String recognizedText) {
+    return recognizedText
+        .replaceAll('\r', '\n')
+        .toUpperCase()
+        .split('\n')
+        .map(_normalizeLine)
+        .where((line) => line.isNotEmpty)
+        .toList(growable: false);
+  }
+
+  String _normalizeLine(String value) {
+    var line = value.trim();
+    if (line.isEmpty) {
+      return '';
+    }
+
+    const replacements = <String, String>{
+      '«': '<',
+      '‹': '<',
+      '›': '<',
+      '﹤': '<',
+      '＜': '<',
+      '|': '<',
+      '¦': '<',
+      '>': '<',
+      ' ': '',
+      '\t': '',
+    };
+
+    replacements.forEach((from, to) {
+      line = line.replaceAll(from, to);
+    });
+
+    final buffer = StringBuffer();
+    for (final rune in line.runes) {
+      final code = rune;
+      final isDigit = code >= 48 && code <= 57;
+      final isUpperAlpha = code >= 65 && code <= 90;
+      final isAngle = code == 60;
+      if (isDigit || isUpperAlpha || isAngle) {
+        buffer.writeCharCode(code);
+      }
+    }
+
+    final normalized = buffer.toString();
+    return normalized.length >= 5 ? normalized : '';
+  }
+
+  int _candidateScore(List<String> candidate) {
+    return candidate.fold<int>(0, (score, line) => score + line.length);
   }
 
   void startPreview({bool isFrontCam = false}) => _channel.invokeMethod<void>(

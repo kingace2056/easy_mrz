@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mrz_scanner/flutter_mrz_scanner.dart';
+import 'package:easy_mrz/easy_mrz.dart';
 
 class CameraPage extends StatefulWidget {
+  const CameraPage({super.key});
+
   @override
-  _CameraPageState createState() => _CameraPageState();
+  CameraPageState createState() => CameraPageState();
 }
 
-class _CameraPageState extends State<CameraPage> {
+class CameraPageState extends State<CameraPage> {
   bool isParsed = false;
   MRZController? controller;
 
@@ -64,7 +66,7 @@ class _CameraPageState extends State<CameraPage> {
                 ],
               )));
     };
-    controller.onError = (error) => print(error);
+    controller.onError = (error) => debugPrint(error);
 
     controller.startPreview();
   }

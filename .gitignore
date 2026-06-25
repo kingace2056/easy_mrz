@@ -32,6 +32,7 @@ package-lock.json
 .pub/
 build/
 lcov.info
+.swiftpm/
 
 # Android related
 **/android/**/gradle-wrapper.jar
@@ -74,3 +75,6 @@ lcov.info
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+example/ios/Flutter/ephemeral/flutter_native_integration.env
+example/ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Package.swift
+example/ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Sources/FlutterGeneratedPluginSwiftPackage/FlutterGeneratedPluginSwiftPackage.swift
