@@ -15,7 +15,7 @@ Fast MRZ (Machine Readable Zone) scanning from identity documents for iOS and An
     'kingace2056' => 'noreply@github.com',
   }
   s.source           = { :path => '.' }
-  s.source_files     = 'flutter_mrz_scanner/Sources/easy_mrz/**/*'
+  s.source_files     = 'easy_mrz/Sources/easy_mrz/**/*'
   s.dependency       'Flutter'
   s.platform         = :ios, '13.0'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }

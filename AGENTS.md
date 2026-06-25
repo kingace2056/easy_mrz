@@ -36,7 +36,7 @@ Important behavior:
 - `android/`
   - Android plugin implementation.
   - Current stack: CameraX + ML Kit.
-- `ios/flutter_mrz_scanner/`
+- `ios/easy_mrz/`
   - iOS Swift Package plugin implementation.
   - Current stack: Apple Vision.
 - `example/`
@@ -87,7 +87,7 @@ flutter build ios --simulator --no-codesign
 ## iOS Notes
 
 - Swift Package root:
-  - `ios/flutter_mrz_scanner/Package.swift`
+- `ios/easy_mrz/Package.swift`
 - Plugin class:
   - `EasyMrzPlugin`
 - Example iOS bundle identifier must remain a valid Apple identifier.

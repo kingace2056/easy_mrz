@@ -7,7 +7,8 @@ This repository is a revamp of the original
 The rewrite keeps the same core plugin API while modernizing the package name,
 documentation, and native iOS implementation.
 
-Agent and tooling notes live in [AGENTS.md](/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/flutter_mrz_scanner/AGENTS.md) and [docs/ARCHITECTURE.md](/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/flutter_mrz_scanner/docs/ARCHITECTURE.md).
+Agent and tooling notes live in [AGENTS.md](AGENTS.md) and
+[doc/ARCHITECTURE.md](doc/ARCHITECTURE.md).
 
 ## What It Does
 
@@ -29,7 +30,7 @@ Agent and tooling notes live in [AGENTS.md](/Users/sarthak/Documents/Acid/eleven
 
 - Plugin package: `com.mlabs.easy_mrz`
 - Example Android applicationId: `com.example.easy_mrz`
-- Example iOS bundle identifier: `com.example.easy_mrz`
+- Example iOS bundle identifier: `com.example.easymrz`
 
 ## Installation
 
@@ -179,11 +180,11 @@ This revamp was done to:
 ## Credits
 
 Original project:
-[Oleksii Leushchenko](https://github.com/olexale)
+[Oleksandr Leushchenko](https://github.com/olexale)
 
 Revamp and maintenance:
 [kingace2056](https://github.com/kingace2056)
 
 ## License
 
-MIT. See [LICENSE](/LICENSE).
+MIT. See [LICENSE](LICENSE).

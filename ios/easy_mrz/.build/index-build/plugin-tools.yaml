@@ -1,0 +1,47 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "PackageStructure": ["<PackageStructure>"]
+  "easy_mrz-arm64-apple-macosx-debug.module": ["<easy_mrz-arm64-apple-macosx-debug.module>"]
+  "main": ["<easy_mrz-arm64-apple-macosx-debug.module>"]
+  "test": ["<easy_mrz-arm64-apple-macosx-debug.module>"]
+default: "main"
+nodes:
+  "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/Sources/easy_mrz/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+commands:
+  "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/Sources/easy_mrz/EasyMrzPlugin.swift","/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/Sources/easy_mrz/MRZScannerView.swift"]
+    outputs: ["/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/sources"]
+    description: "Write auxiliary file /Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/sources"
+
+  "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"]
+    outputs: ["/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+
+  "<easy_mrz-arm64-apple-macosx-debug.module>":
+    tool: phony
+    inputs: ["/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/Modules/easy_mrz.swiftmodule"]
+    outputs: ["<easy_mrz-arm64-apple-macosx-debug.module>"]
+
+  "C.easy_mrz-arm64-apple-macosx-debug.module":
+    tool: shell
+    inputs: ["/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/Sources/easy_mrz/EasyMrzPlugin.swift","/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/Sources/easy_mrz/MRZScannerView.swift","/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/sources"]
+    outputs: ["/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/Modules/easy_mrz.swiftmodule"]
+    description: "Compiling Swift Module 'easy_mrz' (2 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","easy_mrz","-emit-dependencies","-emit-module","-emit-module-path","/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/Modules/easy_mrz.swiftmodule","-output-file-map","/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/output-file-map.json","-parse-as-library","-incremental","@/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/sources","-I","/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx10.13","-incremental","-enable-batch-mode","-serialize-diagnostics","-index-store-path","/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-j8","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/include/easy_mrz-Swift.h","-swift-version","5","-Xfrontend","-experimental-lazy-typecheck","-Xfrontend","-experimental-skip-all-function-bodies","-Xfrontend","-experimental-allow-module-with-compiler-errors","-Xfrontend","-empty-abi-descriptor","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","easy_mrz"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/Sources/easy_mrz/","/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/Package.swift","/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+

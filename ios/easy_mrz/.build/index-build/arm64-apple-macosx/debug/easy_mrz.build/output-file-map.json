@@ -1,0 +1,19 @@
+{
+  "": {
+    "swift-dependencies": "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/primary.swiftdeps"
+  },
+  "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/Sources/easy_mrz/EasyMrzPlugin.swift": {
+    "dependencies": "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/EasyMrzPlugin.d",
+    "object": "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/EasyMrzPlugin.swift.o",
+    "swiftmodule": "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/EasyMrzPlugin~partial.swiftmodule",
+    "swift-dependencies": "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/EasyMrzPlugin.swiftdeps",
+    "diagnostics": "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/EasyMrzPlugin.dia"
+  },
+  "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/Sources/easy_mrz/MRZScannerView.swift": {
+    "dependencies": "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/MRZScannerView.d",
+    "object": "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/MRZScannerView.swift.o",
+    "swiftmodule": "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/MRZScannerView~partial.swiftmodule",
+    "swift-dependencies": "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/MRZScannerView.swiftdeps",
+    "diagnostics": "/Users/sarthak/Documents/Acid/eleven_hype_flutter/packages/easy_mrz/ios/easy_mrz/.build/index-build/arm64-apple-macosx/debug/easy_mrz.build/MRZScannerView.dia"
+  }
+}
