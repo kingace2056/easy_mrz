@@ -7,6 +7,7 @@
 .DS_Store
 .atom/
 .buildlog/
+.build/
 .history
 .svn/
 
@@ -31,6 +32,7 @@ package-lock.json
 .pub-cache/
 .pub/
 build/
+**/.build/
 lcov.info
 .swiftpm/
 

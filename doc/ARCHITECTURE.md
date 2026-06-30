@@ -42,7 +42,8 @@ Responsibilities:
 - Attach to the current Flutter activity.
 - Render preview with `PreviewView`.
 - Use CameraX for preview, analysis, torch, and still capture.
-- Use bundled ML Kit text recognition for local OCR.
+- Use bundled Tesseract OCR with OCR-B trained data for local OCR.
+- Apply passport-focused normalization and scoring heuristics before emitting candidates.
 
 Important invariants:
 

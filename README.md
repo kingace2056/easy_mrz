@@ -1,36 +1,77 @@
 # easy_mrz
 
-`easy_mrz` is a Flutter MRZ scanner for passports, IDs, visas, and other travel documents with machine readable zones.
+`easy_mrz` is a Flutter MRZ scanner for passports, visas, and identity documents
+with machine-readable zones.
 
-This repository is a revamp of the original
-[flutter_mrz_scanner](https://github.com/olexale/flutter_mrz_scanner) project.
-The rewrite keeps the same core plugin API while modernizing the package name,
-documentation, and native iOS implementation.
+This package is a revamp of the original
+[flutter_mrz_scanner](https://github.com/olexale/flutter_mrz_scanner) by
+[Oleksandr Leushchenko](https://github.com/olexale). The public Flutter API was
+kept familiar, while the native implementations were reworked for modern iOS
+and Android builds.
 
-Agent and tooling notes live in [AGENTS.md](AGENTS.md) and
-[doc/ARCHITECTURE.md](doc/ARCHITECTURE.md).
+Agent and tooling notes live in [AGENTS.md](AGENTS.md). Internal implementation
+notes live in [doc/ARCHITECTURE.md](doc/ARCHITECTURE.md).
 
-## What It Does
+## Highlights
 
-- Scans MRZ lines from live camera preview.
-- Parses MRZ text into structured data with `mrz_parser`.
-- Supports an optional document overlay to guide alignment.
-- Lets you start and stop scanning from Dart.
-- Can toggle the flashlight on supported devices.
-- Can capture a still photo with optional crop.
-- Uses Apple Vision on iOS instead of the old Tesseract path.
-- Uses CameraX and on-device ML Kit text recognition on Android.
+- Local-only OCR on both iOS and Android
+- Live camera scanning with Flutter platform views
+- Parsed MRZ output through `mrz_parser`
+- Optional overlay to guide document placement
+- Flashlight control
+- Still photo capture with optional crop
+- Passport-focused Android heuristics for better TD3 MRZ handling
 
-## Supported Platforms
+## Platform Support
 
 - iOS 13+
 - Android 21+
 
-## Example App Ids
+## Native OCR Stack
 
-- Plugin package: `com.mlabs.easy_mrz`
-- Example Android applicationId: `com.example.easy_mrz`
-- Example iOS bundle identifier: `com.example.easymrz`
+### iOS
+
+`easy_mrz` uses:
+
+- `AVFoundation` for camera preview/capture
+- `Vision` (`VNRecognizeTextRequest`) for OCR
+
+Why:
+
+- Apple Vision is fast and highly optimized on Apple hardware
+- It keeps OCR fully local on-device
+- It avoids shipping third-party OCR models on iOS
+- In practice, it is the fastest and most stable path for passport MRZ on iPhone
+
+### Android
+
+`easy_mrz` uses:
+
+- `CameraX` for preview, torch, lifecycle binding, and still capture
+- `Tesseract4Android` with bundled `ocrb.traineddata`
+- Passport-specific OCR heuristics on top of Tesseract
+
+Why:
+
+- Android OCR quality was inconsistent with the previous generic text pipeline
+  on some devices, especially when `ImageAnalysis` frames were negotiated at
+  low resolution
+- MRZ text uses an OCR-B style character set, which Tesseract can target more
+  directly with a whitelist and a bundled traineddata file
+- The package needs to remain fully local and offline
+- CameraX is the current Android camera stack that best fits Flutter plugin
+  lifecycle handling
+
+Tradeoff:
+
+- iOS is generally faster out of the box
+- Android requires more normalization and scoring logic because device camera
+  behavior varies much more
+
+## Privacy
+
+OCR stays local on the device. The plugin does not send camera frames or MRZ
+text to a server.
 
 ## Installation
 
@@ -49,7 +90,7 @@ flutter pub get
 
 ### iOS
 
-Add a camera usage description in `Info.plist`:
+Add camera usage text to `Info.plist`:
 
 ```xml
 <key>NSCameraUsageDescription</key>
@@ -58,19 +99,17 @@ Add a camera usage description in `Info.plist`:
 
 ### Android
 
-If your host app does not already include it, declare camera permission in the
-app manifest:
+Declare camera permission in your app manifest if it is not already present:
 
 ```xml
 <uses-permission android:name="android.permission.CAMERA" />
 ```
 
-If you are using the example app, this is already included.
-
 ## Usage
 
 ```dart
 import 'package:easy_mrz/easy_mrz.dart';
+import 'package:flutter/material.dart';
 
 class ScannerPage extends StatelessWidget {
   const ScannerPage({super.key});
@@ -81,7 +120,6 @@ class ScannerPage extends StatelessWidget {
       withOverlay: true,
       onControllerCreated: (controller) {
         controller.onParsed = (result) {
-          // Handle MRZResult here.
           debugPrint('MRZ parsed: ${result.toJson()}');
         };
 
@@ -98,9 +136,9 @@ class ScannerPage extends StatelessWidget {
 
 ## Controller API
 
-The `MRZScanner` widget gives you an `MRZController`.
+`MRZScanner` provides an `MRZController`.
 
-Available methods:
+Methods:
 
 - `startPreview({bool isFrontCam = false})`
 - `stopPreview()`
@@ -113,73 +151,76 @@ Callbacks:
 - `onParsed(MRZResult result)`
 - `onError(String message)`
 
-## Features In Detail
+## How Parsing Works
 
-### Live Parsing
+1. Native code captures and OCRs candidate MRZ text.
+2. Native code sends normalized candidate lines to Dart through `onParsed`.
+3. Dart runs `mrz_parser` to validate and parse the candidate into `MRZResult`.
 
-The scanner continuously analyzes the camera feed and emits MRZ results once a
-valid parse is found.
+This split is intentional:
 
-### iOS Vision OCR
+- Native code owns camera and OCR behavior
+- Dart owns the final parsing contract
+- The Flutter API remains stable even if native OCR changes later
 
-The iOS implementation uses Apple Vision text recognition.
+## Android Behavior Notes
 
-### Android CameraX + ML Kit
+Android scanning is tuned to stay local and reasonably fast while still being
+strict enough to reject obvious garbage OCR.
 
-The Android implementation uses CameraX for preview/capture and bundled ML Kit
-text recognition for local on-device OCR.
+Current Android strategy:
 
-### Overlay
+- Prefer passport TD3 MRZ detection first
+- Crop the lower MRZ band
+- OCR each passport line separately
+- Repair common OCR substitutions like `0/O`, `1/I`, `5/S`
+- Score candidates using MRZ structure and check digits
+- Require repeated weaker detections before emitting them
 
-Set `withOverlay: true` to show the guide frame around the expected document
-region.
+This is more complex than the iOS path because Android device camera behavior
+varies more across vendors and frame pipelines.
 
-### Still Capture
+## Recommendations
 
-Use `takePhoto()` if you want the raw image bytes, or pass `crop: true` to crop
-the document region before returning the image.
+For best results:
 
-### Front Camera Support
+- Use a real device
+- Keep the document inside the overlay
+- Use even lighting
+- Avoid glare on laminated pages
+- Hold the phone steady for a brief moment when Android is close to locking
 
-The controller can switch to the front camera with:
+## Example App
 
-```dart
-controller.startPreview(isFrontCam: true);
-```
+Example identifiers in this repository:
 
-## Recommended Usage
+- Plugin package: `com.mlabs.easy_mrz`
+- Example Android applicationId: `com.example.easy_mrz`
+- Example iOS bundle identifier: `com.example.easymrz`
 
-For the best scan rate and reliability:
-
-- Use a real device instead of an emulator or simulator.
-- Hold the document inside the overlay frame.
-- Make sure lighting is even.
-- Avoid strong glare on laminated pages.
-
-## Example
-
-Run the example app from the `example/` folder:
+Run the example:
 
 ```bash
 cd example
 flutter run
 ```
 
-## Migration Notes
+## Why The Platforms Differ
 
-This revamp was done to:
+The plugin does not force the same OCR stack on both platforms.
 
-- Rebrand the package to `easy_mrz`
-- Modernize the iOS scanning path
-- Replace the Android Fotoapparat/Tesseract stack with CameraX and ML Kit
-- Improve OCR normalization
-- Improve MRZ parsing stability
-- Clean up the plugin structure
-- Add clearer documentation
+That is intentional:
+
+- iOS has first-party Vision APIs that are better than shipping a separate OCR
+  engine there
+- Android benefits from a more controlled OCR-B-oriented approach for MRZ
+  scanning, especially on devices where generic text OCR is noisy
+
+The goal is not stack symmetry. The goal is reliable local MRZ scanning.
 
 ## Credits
 
-Original project:
+Original project and concept:
 [Oleksandr Leushchenko](https://github.com/olexale)
 
 Revamp and maintenance:
