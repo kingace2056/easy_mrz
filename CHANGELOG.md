@@ -1,3 +1,9 @@
+## 1.0.1
+
+- Migrated the Android Gradle setup to Flutter's built-in Kotlin flow.
+- Improved Android MRZ detection stability with passport-focused Tesseract heuristics.
+- Updated the README and architecture notes to document the real iOS and Android OCR stacks.
+
 ## 1.0.0
 
 - Rebranded the package to `easy_mrz`.

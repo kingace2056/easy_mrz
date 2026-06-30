@@ -1,6 +1,6 @@
 name: easy_mrz
 description: Fast MRZ (Machine Readable Zone) scanning for identity documents on iOS and Android.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/kingace2056/easy_mrz
 repository: https://github.com/kingace2056/easy_mrz
 issue_tracker: https://github.com/kingace2056/easy_mrz/issues
